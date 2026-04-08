@@ -8,7 +8,6 @@ from flask import Flask, render_template, request, abort, url_for, redirect, ses
 from flask import jsonify
 from pathlib import Path
 import json
-from validation import validate_payment_form
 import validation
 import encryption
 app = Flask(__name__)
@@ -292,7 +291,7 @@ def profile():
         field_errors=field_errors,
         success_message=success_msg,
     )
-    
+
 @app.route("/error", methods=["GET", "POST"])
 def error_page():
     cod_error = 0
