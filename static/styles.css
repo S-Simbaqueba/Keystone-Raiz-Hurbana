@@ -5,7 +5,7 @@
   --text: #000000;
   --muted: #0f0f0f;
   --border: #1d2700;
-  --accent: #59e4d8; /* morado */
+  --accent: #59e4d8;
   --accent2: #c7ae30;
   --shadow: 0 12px 30px rgba(0,0,0,.35);
   --radius: 16px;
@@ -28,7 +28,7 @@ a{color:inherit; text-decoration:none}
 
 .topbar{
   position: sticky; top:0;
-  background: #1d5831;
+  background: #2f7d49;
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border);
   z-index: 10;
@@ -72,7 +72,7 @@ a{color:inherit; text-decoration:none}
 .btn-full{width:100%}
 
 .hero{
-  background: radial-gradient(1200px 600px at 50% 0%, #404d1d, transparent 60%),
+  background: radial-gradient(1200px 600px at 50% 0%, #6f7a50, transparent 60%),
               linear-gradient(180deg, #70833d, rgba(0,0,0,0));
   padding: 70px 0 46px;
   border-bottom: 1px solid var(--border);
@@ -214,13 +214,13 @@ a{color:inherit; text-decoration:none}
   justify-content:center;
   padding: 40px 20px;
   background:
-    radial-gradient(900px 450px at 50% 10%, rgba(168,85,247,.28), transparent 60%),
-    radial-gradient(700px 350px at 40% 80%, rgba(124,58,237,.18), transparent 55%);
+    radial-gradient(900px 450px at 50% 10%, rgba(85, 247, 182, 0.28), transparent 60%),
+    radial-gradient(700px 350px at 40% 80%, rgba(0, 0, 0, 0.18), transparent 55%);
 }
 
 .auth-card{
   width: 420px;
-  background: rgba(22,26,34,.85);
+  background: #85b594;
   border: 1px solid var(--border);
   border-radius: 18px;
   padding: 22px 22px 18px;
@@ -287,7 +287,7 @@ a{color:inherit; text-decoration:none}
   display:flex;
   align-items:center;
   gap: 10px;
-  background: rgba(255,255,255,.03);
+  background: rgba(0, 0, 0, 0.03);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 10px 12px;
@@ -300,6 +300,10 @@ a{color:inherit; text-decoration:none}
   outline: none;
   color: var(--text);
   font-size: .98rem;
+}
+
+.auth-input input::placeholder {
+  color: rgba(50, 48, 48, 0.7); 
 }
 
 .auth-icon{opacity: .85}
@@ -330,7 +334,7 @@ a{color:inherit; text-decoration:none}
 .auth-check input{ accent-color: var(--accent); }
 
 .auth-link{
-  color: rgba(168,85,247,.95);
+  color: rgba(92, 95, 136, 0.95);
 }
 .auth-link:hover{ text-decoration: underline; }
 

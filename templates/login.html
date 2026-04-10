@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% set title = "Sign In - RaízUrbana" %}
+
+{% block header %}{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="auth-appname">Raíz Urbana</div>
+    </div>
+
+    <div class="auth-subtitle">
+      <span class="auth-lock">🔒</span>
+      <span>Inicia sesión para continuar</span>
+    </div>
+
+    {% if error =="Invalid credentials." %}
+    <div class="auth-banner auth-banner-error">
+        <strong>{{ error }}</strong> Por favor, revisa usuario y contraseña
+    </div>
+    {% endif %}
+
+    {% if info_message %}
+    <div class="auth-banner auth-banner-ok">{{ info_message }}</div>
+    {% endif %}
+
+    <form class="auth-form" method="post" action="{{ url_for('login') }}">
+        <label class="auth-label" for="email">Usuario</label>
+        <div class="auth-input">
+        <span class="auth-icon">✉️</span>
+        <input id="email" name="email" type="email"
+                value="{{ (form.email if form else '') }}"
+                placeholder="Usuario 1" />
+        </div>
+        {% if field_errors and field_errors.get('email') %}
+        <div class="auth-help auth-help-error">{{ field_errors.get('email') }}</div>
+        {% endif %}
+
+        <label class="auth-label" for="password">Contraseña</label>
+        <div class="auth-input">
+        <span class="auth-icon">🔒</span>
+        <input id="password" name="password" type="password" placeholder="••••••••" />
+        <span class="auth-eye">👁️</span>
+        </div>
+
+        {% if field_errors and field_errors.get('password') %}
+        <div class="auth-help auth-help-error">{{ field_errors.get('password') }}</div>
+        {% endif %}
+
+      <div class="auth-row">
+        <a class="auth-link" href="#">¿Olvidaste contraseña?</a>
+      </div>
+
+      <button class="btn btn-primary btn-full" type="submit">Iniciar sesión</button>
+
+      <div class="auth-bottom">
+        
+      </div>
+    </form>
+  </div>
+</section>
+
+{% endblock %}

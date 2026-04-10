@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "full_name": "sara",
+    "email": "test@tes.com",
+    "phone": "3001111112",
+    "password": {
+      "algorithm": "pbkdf2_sha256",
+      "iterations": 200000, 
+      "salt": "de1ab38dbfb873cc8d5ae7f2ffa85f4b", 
+      "hash": "65bd1c9e3d68b9499b8be3adaedc5e237c31f5b25e767b7bbe9e7d11fc50c1bd"
+      },
+    "role": "admin",
+    "status": "active"
+  }, 
+  {
+    "id": 2,
+    "full_name": "pepito",
+    "email": "test3@tes.com",
+    "phone": "3001111112",
+    "password": {
+      "algorithm": "pbkdf2_sha256",
+      "iterations": 200000, 
+      "salt": "de1ab38dbfb873cc8d5ae7f2ffa85f4b", 
+      "hash": "65bd1c9e3d68b9499b8be3adaedc5e237c31f5b25e767b7bbe9e7d11fc50c1bd"
+      },
+    "role": "user",
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "full_name": "Jonathan",
+    "email": "jojo@joestar.com",
+    "phone": "12345678",
+    "password": {
+      "algorithm": "pbkdf2_sha256",
+      "iterations": 200000,
+      "salt": "4a50e8e8ab595fe8bb4f1eed53f099ec",
+      "hash": "3d95537d14cd35ee0b6f26e6ac190ce35784e1e5bea19b0dee1c0b4a3b4c32b8"
+    },
+    "role": "user",
+    "status": "active"
+  }
+]
