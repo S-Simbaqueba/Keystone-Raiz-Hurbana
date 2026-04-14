@@ -1,0 +1,16 @@
+{
+    "1":{
+        "id": 1,
+        "Usuario": "Usuario1",
+        "parent": 0,
+        "Contenido": "Mi planta se esta muriendo, pero le doy agua cada hora. Ayudaaaaa",
+        "megusta": 3
+}, 
+    "2":{
+        "id": 2,
+        "Usuario": "Usuario2",
+        "parent": 1,
+        "Contenido": "Es una vez al día, no una vez cada hora",
+        "megusta": 10
+    }
+}

@@ -20,7 +20,9 @@ BASE_DIR = Path(__file__).resolve().parent
 EVENTS_PATH = BASE_DIR / "data" / "events.json"
 USERS_PATH = BASE_DIR / "data" / "users.json"
 ORDERS_PATH = BASE_DIR / "data" / "orders.json"
-BLOCK_PATH = BASE_DIR / "data" / "block.json"
+BLOGS_PATH = BASE_DIR / "data" / "blogs.json"
+PLANTS_PATH = BASE_DIR / "data" / "plants.json"
+FORO_PATH = BASE_DIR / "data" / "foro.json"
 CATEGORIES = ["All", "Music", "Tech", "Sports", "Business"]
 CITIES = ["Any", "New York", "San Francisco", "Berlin", "London", "Oakland", "San Jose"]
 
@@ -144,49 +146,6 @@ def load_users() -> list[dict]:
     return json.loads(USERS_PATH.read_text(encoding="utf-8"))
 
 
-def update_block() -> None:
-    # Leer el JSON
-    data = json.loads(BLOCK_PATH.read_text(encoding="utf-8"))
-    
-    # Acceder al diccionario correctamente
-    users = data[0]['usuarios']
-    
-    # Actualizar intentos
-    users['intentos'] += 1
-    
-    # Verificar 
-    if users['intentos'] > 3:
-        users['tiempoBloqueo'] = 300
-    
-    # Actualizar json
-    with open(BLOCK_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
-
-
-def delete_block() -> None:
-    data = json.loads(BLOCK_PATH.read_text(encoding="utf-8"))
-    users = data[0]['usuarios']
-    # Actualizar intentos
-    users['intentos'] = 0
-    users['tiempoBloqueo'] = 0
-    with open(BLOCK_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
-
-def check_time() -> int:
-    data = json.loads(BLOCK_PATH.read_text(encoding="utf-8"))
-    users = data[0]["usuarios"]
-    rest_time = users["tiempoBloqueo"]
-    return rest_time
-
-@app.route("/desbloquear_usuario", methods=["POST"])
-def desbloquear_usuario():
-    data = json.loads(BLOCK_PATH.read_text(encoding="utf-8"))
-    users = data[0]['usuarios']
-    users['tiempoBloqueo'] = 0
-    with open(BLOCK_PATH, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=4, ensure_ascii=False)
-    return jsonify({"status": "ok"})
-
 def save_users(users: list[dict]) -> None:
     USERS_PATH.write_text(json.dumps(users, indent=2), encoding="utf-8")
 
@@ -202,21 +161,6 @@ def find_user_by_email(email: str) -> Optional[dict]:
 
 def user_exists(email: str) -> bool:
     return find_user_by_email(email) is not None
-
-
-def load_orders() -> list[dict]:
-    if not ORDERS_PATH.exists():
-        ORDERS_PATH.parent.mkdir(parents=True, exist_ok=True)
-        ORDERS_PATH.write_text("[]", encoding="utf-8")
-    return json.loads(ORDERS_PATH.read_text(encoding="utf-8"))
-
-
-def save_orders(orders: list[dict]) -> None:
-    ORDERS_PATH.write_text(json.dumps(orders, indent=2), encoding="utf-8")
-
-
-def next_order_id(orders: list[dict]) -> int:
-    return max([o.get("id", 0) for o in orders], default=0) + 1
 
 
 def require_login() -> None:
@@ -312,13 +256,7 @@ def login():
         msg = "Account created successfully. Please sign in." if registered == "1" else None
         return render_template("login.html", info_message=msg)
     
-    rest_time = check_time()
-    if rest_time != 0:
-        return render_template(
-            "login.html",
-            error="Account temporarily locked",
-            segundos_restantes = rest_time,
-        ), 400
+    
     email = request.form.get("email", "")
     password = request.form.get("password", "")
 
@@ -343,14 +281,12 @@ def login():
 
     user = find_user_by_email(email)
     if not user or not encryption.verify_password(password, user.get("password")):
-        update_block()
         return render_template(
             "login.html",
             error="Invalid credentials.",
             field_errors={"email": " ", "password": " "},
             form={"email": email},
         ), 401
-    delete_block()
     session["user_email"] = (user.get("email") or "").strip().lower()
     session['login_time'] = datetime.now(timezone.utc).timestamp()
 
@@ -438,88 +374,6 @@ def dashboard():
     user = get_current_user()
     return render_template("dashboard.html", user_name=(user.get("full_name") if user else "User"), paid=paid)
 
-@app.route("/checkout/<int:event_id>", methods=["GET", "POST"])
-def checkout(event_id: int):
-    login_check = require_login()
-    if login_check:  
-        return login_check
-
-
-    events = load_events()
-    event = next((e for e in events if e.id == event_id), None)
-    if not event:
-        abort(404)
-
-    qty = _safe_int(request.args.get("qty", "1"), default=1, min_v=1, max_v=8)
-
-    service_fee = 5.00
-    subtotal = event.price_usd * qty
-    total = subtotal + service_fee
-
-    if request.method == "GET":
-        return render_template(
-            "checkout.html",
-            event=event,
-            qty=qty,
-            subtotal=subtotal,
-            service_fee=service_fee,
-            total=total,
-            errors={},
-            form_data={}
-        )
-
-    card_number = request.form.get("card_number", "")
-    exp_date = request.form.get("exp_date", "")
-    cvv = request.form.get("cvv", "")
-    name_on_card = request.form.get("name_on_card", "")
-    billing_email = request.form.get("billing_email", "")
-
-    clean, errors = validate_payment_form(
-        card_number=card_number,
-        exp_date=exp_date,
-        cvv=cvv,
-        name_on_card=name_on_card,
-        billing_email=billing_email
-    )
-    card_number = encryption.ofuscation(card_number)
-    
-    form_data = {
-        "exp_date": clean.get("exp_date", ""),
-        "name_on_card": clean.get("name_on_card", ""),
-        "billing_email": clean.get("billing_email", ""),
-        "card": clean.get("card", "")
-    }
-
-    if errors:
-        return render_template(
-            "checkout.html",
-            event=event, qty=qty, subtotal=subtotal,
-            service_fee=service_fee, total=total,
-            errors=errors, form_data=form_data
-        ), 400
-
-    orders = load_orders()
-    order_id = next_order_id(orders)
-    orders.append({
-        "id": order_id,
-        "user_email": encryption.encrypt_aes(billing_email, app.secret_key),
-        "event_id": event.id,
-        "event_title": event.title,
-        "qty": qty,
-        "unit_price": event.price_usd,
-        "service_fee": service_fee,
-        "total": total,
-        "status": "PAID",
-        "created_at": datetime.utcnow().isoformat(),
-        "payment": form_data
-    })
-
-    save_orders(orders)
-
-    return redirect(url_for("dashboard", paid="1"))
-
-
-
 @app.route("/profile", methods=["GET", "POST"])
 def profile():
     login_check = require_login()
@@ -587,11 +441,21 @@ def profile():
         field_errors=field_errors,
         success_message=success_msg,
     )
+
 @app.route("/error", methods=["GET", "POST"])
 def error_page():
     cod_error = 0
     mesage = "error"
     return render_template("error.html", error = cod_error, mesage = mesage)
+
+@app.route("/blog", methods=["GET", "POST"])
+def blog_page():
+    return render_template("blog.html")
+
+@app.route("/foro", methods=["GET", "POST"])
+def foro_page():
+    data = json.loads(FORO_PATH.read_text(encoding="utf-8"))
+    return render_template("foro.html", comentarios=data)
 
 
 @app.get("/admin/users")
@@ -656,6 +520,7 @@ def admin_change_role(user_id: int):
             break
     save_users(users)
     return redirect(url_for("admin_users"))
+
 
 if __name__ == "__main__":
     app.run(debug=True)

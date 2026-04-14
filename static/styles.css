@@ -463,3 +463,48 @@ a{color:inherit; text-decoration:none}
   grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
+
+/*Dashboard*/
+
+.containerDashboard {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.bloque {
+    flex: 1;
+}
+
+img {
+    width: 80%;
+    height: auto;
+}
+
+/*Foro*/
+
+.comentarios {
+    max-width: 700px;
+    margin: auto;
+}
+
+.comentario {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    background: #537D5D;
+}
+
+.respuestas {
+    margin-top: 10px;
+    padding-left: 20px;
+    border-left: 2px solid #ddd;
+}
+
+.respuesta {
+    margin-top: 10px;
+    background: #A98467;
+    padding: 10px;
+    border-radius: 6px;
+}

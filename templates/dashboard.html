@@ -4,9 +4,20 @@
 {% block content %}
 <section class="section">
   <div class="container">
-    <h1>Welcome back, {{ user_name }}</h1>
+      <h1>Bienvenido de vuelta, {{ user_name }}</h1>
     <p class="muted">Aquí puedes ver los datos de tus plantas</p>
-  </div>
 
+    <p class="muted">Planta 1</p>
+    <div class="containerDashboard">
+      <div class="bloque izquierda">
+        <img src="{{ url_for('static', filename='images/GraficoDatos.png') }}" alt="Imagen">
+      </div>
+      <div class="bloque derecha">
+          <h2>Planta de {{ user_name }}</h2>
+          <p>La planta esta bien en terminos generales, sin embargo, se evidencia que la cantidad de agua dada no es la correcta, se sugiere dar más agua. Adicionalmente, la calidad de tierra es de baja calidad, se recomineda cambios más constantes.</p>
+      </div>
+    </div>
+  </div>
 </section>
+
 {% endblock %}

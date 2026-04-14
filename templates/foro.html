@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% set title = "Foro" %}
+
+{% block content %}
+<div class="comentarios">
+    {% if session.get("user_email") %}
+    a
+    {% endif %}
+
+
+    {% for c in comentarios.values() if c.parent == 0 %}
+        <div class="comentario">
+            <p><strong>{{ c.Usuario }}</strong></p>
+            <p>{{ c.Contenido }}</p>
+            <small>👍 {{ c.megusta }}</small>
+
+            <!-- RESPUESTAS -->
+            <div class="respuestas">
+                {% for r in comentarios.values() if r.parent == c.id %}
+                    <div class="respuesta">
+                        <p><strong>{{ r.Usuario }}</strong></p>
+                        <p>{{ r.Contenido }}</p>
+                        <small>👍 {{ r.megusta }}</small>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}

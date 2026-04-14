@@ -1,7 +1,7 @@
 [
   {
     "id": 1,
-    "full_name": "sara",
+    "full_name": "Usuario1",
     "email": "test@tes.com",
     "phone": "3001111112",
     "password": {
@@ -15,7 +15,7 @@
   }, 
   {
     "id": 2,
-    "full_name": "pepito",
+    "full_name": "Usuario2",
     "email": "test3@tes.com",
     "phone": "3001111112",
     "password": {
