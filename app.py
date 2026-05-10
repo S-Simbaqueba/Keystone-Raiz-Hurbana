@@ -12,34 +12,17 @@ import json
 from validation import validate_payment_form
 import validation
 import encryption
+import funcionesVarias
 app = Flask(__name__)
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.secret_key = b'1234567890123456'
 
 BASE_DIR = Path(__file__).resolve().parent
-EVENTS_PATH = BASE_DIR / "data" / "events.json"
 USERS_PATH = BASE_DIR / "data" / "users.json"
-ORDERS_PATH = BASE_DIR / "data" / "orders.json"
-BLOGS_PATH = BASE_DIR / "data" / "blogs.json"
 PLANTS_PATH = BASE_DIR / "data" / "plants.json"
 FORO_PATH = BASE_DIR / "data" / "foro.json"
-CATEGORIES = ["All", "Music", "Tech", "Sports", "Business"]
-CITIES = ["Any", "New York", "San Francisco", "Berlin", "London", "Oakland", "San Jose"]
-
-
-@dataclass(frozen=True)
-class Event:
-    id: int
-    title: str
-    category: str  
-    city: str
-    venue: str
-    start: datetime
-    end: datetime
-    price_usd: float
-    available_tickets: int
-    banner_url: str
-    description: str
+SELL_PATH = BASE_DIR / "data" / "venta.json"
+BLOG_PATH = BASE_DIR / "data" / "blogs.json"
 
 def _user_with_defaults(u: dict) -> dict:
     u = dict(u)
@@ -53,30 +36,6 @@ def get_current_user() -> Optional[dict]:
     if not email:
         return None
     return find_user_by_email(email)
-
-
-
-def load_events() -> List[Event]:
-    data = json.loads(EVENTS_PATH.read_text(encoding="utf-8"))
-    return [
-        Event(
-            id=int(e["id"]),
-            title=e["title"],
-            category=e["category"],
-            city=e["city"],
-            venue=e["venue"],
-            start=datetime.fromisoformat(e["start"]),
-            end=datetime.fromisoformat(e["end"]),
-            price_usd=float(e["price_usd"]),
-            available_tickets=int(e["available_tickets"]),
-            banner_url=e.get("banner_url", ""),
-            description=e.get("description", ""),
-        )
-        for e in data
-    ]
-
-
-EVENTS: List[Event] = load_events()
 
 
 def _parse_date(date_str: str) -> Optional[datetime]:
@@ -96,48 +55,6 @@ def _safe_int(value: str, default: int = 1, min_v: int = 1, max_v: int = 10) -> 
     except (TypeError, ValueError):
         return default
     return max(min_v, min(max_v, n))
-
-
-def filter_events(
-    q: str = "",
-    city: str = "Any",
-    date: Optional[datetime] = None,
-    category: str = "All",
-    ) -> List[Event]:
-    q_norm = (q or "").strip().lower()
-    city_norm = (city or "Any").strip()
-    category_norm = (category or "All").strip()
-
-    results = load_events()
-
-    if category_norm != "All":
-        results = [e for e in results if e.category == category_norm]
-
-    if city_norm != "Any":
-        results = [e for e in results if e.city == city_norm]
-
-    if date:
-        results = [
-            e for e in results
-            if e.start.date() == date.date()
-        ]
-
-    if q_norm:
-        results = [
-            e for e in results
-            if q_norm in e.title.lower() or q_norm in e.venue.lower()
-        ]
-
-    results.sort(key=lambda e: e.start)
-    return results
-
-
-def get_event_or_404(event_id: int) -> Event:
-    for e in EVENTS:
-        if e.id == event_id:
-            return e
-    abort(404)
-
 
 def load_users() -> list[dict]:
     if not USERS_PATH.exists():
@@ -189,64 +106,14 @@ def require_admin():
 # -----------------------------
 @app.get("/")
 def index():
-    q = request.args.get("q", "")
-    city = request.args.get("city", "Any")
-    date_str = request.args.get("date", "")
-    category = request.args.get("category", "All")
-
-    date = _parse_date(date_str)
-    events = filter_events(q=q, city=city, date=date, category=category)
-
-    featured = events[:3] 
-    upcoming = events[:6]
-
     return render_template(
-        "index.html",
-        q=q,
-        city=city,
-        date_str=date_str,
-        category=category,
-        categories=CATEGORIES,
-        cities=CITIES,
-        featured=featured,
-        upcoming=upcoming,
+        "login.html",
     )
 
 @app.context_processor
 def inject_user():
     user_data = get_current_user()
     return dict(current_user=user_data)
-
-@app.get("/event/<int:event_id>")
-def event_detail(event_id: int):
-    event = next((e for e in load_events() if e.id == event_id), None)
-    if not event:
-        abort(404)
-
-    similar = [e for e in EVENTS if e.category == event.category and e.id != event.id][:5]
-
-    return render_template(
-        "event_detail.html",
-        event=event,
-        similar=similar,
-    )
-
-
-@app.post("/event/<int:event_id>/buy")
-def buy_ticket(event_id: int):
-    event = get_event_or_404(event_id) 
-    qty = _safe_int(request.form.get("qty", "1"), default=1, min_v=1, max_v=8)
-
-    if qty > event.available_tickets:
-        similar = [e for e in load_events() if e.category == event.category and e.id != event.id][:5]
-        return render_template(
-            "event_detail.html",
-            event=event,
-            similar=similar,
-            buy_error="Not enough tickets available for that quantity."
-        ), 400
-
-    return redirect(url_for("checkout", event_id=event.id, qty=qty))
 
 
 @app.route("/login", methods=["GET", "POST"])
@@ -454,9 +321,70 @@ def blog_page():
 
 @app.route("/foro", methods=["GET", "POST"])
 def foro_page():
-    data = json.loads(FORO_PATH.read_text(encoding="utf-8"))
-    return render_template("foro.html", comentarios=data)
+    comentarios = json.loads(FORO_PATH.read_text(encoding="utf-8"))
+    arbol = funcionesVarias.construir_arbol(comentarios)
+    return render_template("foro.html", comentarios=arbol)
 
+@app.route("/compra", methods=["GET", "POST"])
+def venta_page():
+    comentarios = json.loads(SELL_PATH.read_text(encoding="utf-8"))
+    return render_template("sell.html", comentarios=comentarios)
+
+@app.route("/like/<int:id>", methods=["POST"])
+def like(id):
+    comentarios = json.loads(FORO_PATH.read_text(encoding="utf-8"))
+    
+    for c in comentarios.values():
+        if c["id"] == id:
+            c["megusta"] += 1
+            with FORO_PATH.open("w", encoding="utf-8") as f:
+                json.dump(comentarios, f, ensure_ascii=False, indent=2)
+            return jsonify({
+                "success": True,
+                "likes": c["megusta"]
+            })
+
+    return jsonify({"success": False}), 404
+
+@app.route("/comentario", methods=["POST"])
+def comentario():
+    data = request.json
+    path = FORO_PATH
+    contexto = data.get("contexto")
+    if contexto == "foro":
+        path = FORO_PATH
+    elif contexto == "sell":
+        path = SELL_PATH
+    comentarios = json.loads(path.read_text(encoding="utf-8"))
+    nuevo_id = max(
+        int(k)
+        for k in comentarios.keys()
+    ) + 1
+    user = get_current_user()
+    if contexto == "foro":
+        comentarios[str(nuevo_id)] = {
+        "id": nuevo_id,
+        "Usuario": user.get("full_name"),
+
+        "parent": data["parent"],
+
+        "Contenido": data["contenido"],
+
+        "megusta": 0
+    }
+    elif contexto == "sell":
+        comentarios[str(nuevo_id)] = {
+        "id": nuevo_id,
+        "Usuario": user.get("full_name"),
+        "Contenido": data["contenido"],
+    }
+        
+
+    with path.open("w", encoding="utf-8") as f:
+        json.dump(comentarios, f, ensure_ascii=False, indent=2)
+    return jsonify({
+        "success": True
+    })
 
 @app.get("/admin/users")
 def admin_users():

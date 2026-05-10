@@ -11,14 +11,12 @@
 {% block header %}
 <header class="topbar">
   <div class="container topbar-inner">
-    <a class="brand" href="{{ url_for('index') }}">
-      <span class="brand-name">Raíz Urbana</span>
-    </a>
+      <b><span class="brand-name">Raíz Urbana</span></b>
 
     <nav class="navlinks">
       <a href="{{ url_for('foro_page') }}">Foro</a>
       <a href="{{ url_for('blog_page') }}">Blogs</a>
-      <a href="{{ url_for('profile') }}">Compra y venta</a>
+      <a href="{{ url_for('venta_page') }}">Compra y venta</a>
     </nav>
 
     <div class="top-actions">
@@ -46,36 +44,6 @@
   </main>
 
   <footer class="footer">
-    <div class="container footer-grid">
-      <div>
-        <div class="brand footer-brand">
-          <span class="brand-badge">EH</span>
-          <span class="brand-name">EventHub</span>
-        </div>
-        <p class="muted">Discover and experience the best events near you.</p>
-      </div>
-
-      <div>
-        <h4>Quick Links</h4>
-        <a href="#" class="footer-link">About Us</a>
-        <a href="#" class="footer-link">Contact</a>
-        <a href="#" class="footer-link">Blog</a>
-        <a href="#" class="footer-link">FAQs</a>
-      </div>
-
-      <div>
-        <h4>Categories</h4>
-        <a href="{{ url_for('index', category='Music') }}" class="footer-link">Music</a>
-        <a href="{{ url_for('index', category='Tech') }}" class="footer-link">Tech</a>
-        <a href="{{ url_for('index', category='Sports') }}" class="footer-link">Sports</a>
-        <a href="{{ url_for('index', category='Business') }}" class="footer-link">Business</a>
-      </div>
-
-      <div>
-        <h4>Connect With Us</h4>
-        <p class="muted">Social icons placeholders</p>
-      </div>
-    </div>
   </footer>
 </body>
 </html>

@@ -1,16 +1,30 @@
 {
-    "1":{
-        "id": 1,
-        "Usuario": "Usuario1",
-        "parent": 0,
-        "Contenido": "Mi planta se esta muriendo, pero le doy agua cada hora. Ayudaaaaa",
-        "megusta": 3
-}, 
-    "2":{
-        "id": 2,
-        "Usuario": "Usuario2",
-        "parent": 1,
-        "Contenido": "Es una vez al día, no una vez cada hora",
-        "megusta": 10
-    }
+  "1": {
+    "id": 1,
+    "Usuario": "Usuario1",
+    "parent": 0,
+    "Contenido": "Mi planta se esta muriendo, pero le doy agua cada hora. Ayudaaaaa",
+    "megusta": 21
+  },
+  "2": {
+    "id": 2,
+    "Usuario": "Usuario2",
+    "parent": 1,
+    "Contenido": "Es una vez al día, no una vez cada hora",
+    "megusta": 10
+  },
+  "3": {
+    "id": 3,
+    "Usuario": "Usuario1",
+    "parent": 0,
+    "Contenido": "me gusta las cebollas. cuál es su planta favorita?",
+    "megusta": 0
+  },
+  "4": {
+    "id": 4,
+    "Usuario": "Usuario4",
+    "parent": 3,
+    "Contenido": "Las fresas",
+    "megusta": 0
+  }
 }

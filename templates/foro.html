@@ -1,32 +1,168 @@
 {% extends "base.html" %}
 {% set title = "Foro" %}
 
-{% block content %}
-<div class="comentarios">
-    {% if session.get("user_email") %}
-    a
-    {% endif %}
+{% macro render_comentario(c) %}
+    <div class="comentario">
+        <div class="comentario-header">
+            <strong>{{ c.Usuario }}</strong>
+        </div>
 
+        <div class="comentario-body">
+            {{ c.Contenido }}
+        </div>
 
-    {% for c in comentarios.values() if c.parent == 0 %}
-        <div class="comentario">
-            <p><strong>{{ c.Usuario }}</strong></p>
-            <p>{{ c.Contenido }}</p>
-            <small>👍 {{ c.megusta }}</small>
+        <div class="comentario-footer">
 
-            <!-- RESPUESTAS -->
-            <div class="respuestas">
-                {% for r in comentarios.values() if r.parent == c.id %}
-                    <div class="respuesta">
-                        <p><strong>{{ r.Usuario }}</strong></p>
-                        <p>{{ r.Contenido }}</p>
-                        <small>👍 {{ r.megusta }}</small>
-                    </div>
-                {% endfor %}
-            </div>
+            <button class="like-btn" type="button" onclick="darLike({{ c.id }})">
+                👍 <span id="likes-{{ c.id }}">{{ c.megusta }}</span>
+            </button>
+
+            <button 
+            class="respuesta-btn"
+            type="button"
+            onclick="mostrarRespuesta({{ c.id }})">
+                Responder
+            </button>
+        </div>
+        
+        <div 
+            id="respuesta-form-{{ c.id }}" 
+            class="respuesta-form"
+            style="display:none;">
+
+            <textarea id="texto-{{ c.id }}"placeholder="Escribe una respuesta..."></textarea>
+
+            <button
+                type="button"
+                onclick="enviarRespuesta({{ c.id }})">
+
+                Enviar
+            </button>
 
         </div>
-    {% endfor %}
+
+        {% if c.respuestas %}
+            <div class="respuestas">
+                {% for r in c.respuestas %}
+                    {{ render_comentario(r) }}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+
+{% block content %}
+
+<div class="comentarios">
+    
+    <div class="foro">
+        <div class="nuevo-comentario">
+
+        <textarea id="nuevo-texto"placeholder="Escribe un comentario..."></textarea>
+        <button
+        type="button"
+        onclick="nuevoComentario()">
+
+            Publicar
+        </button>
+
+    </div>
+        {% for c in comentarios %}
+            {{ render_comentario(c) }}
+        {% endfor %}
+    </div>
 
 </div>
+
+<script>
+async function darLike(id) {
+
+    console.log("Like:", id);
+
+    const res = await fetch(`/like/${id}`, {
+        method: "POST"
+    });
+
+    const data = await res.json();
+
+    console.log(data);
+
+    if (data.success) {
+        document.getElementById(`likes-${id}`).innerText = data.likes;
+    }
+}
+
+function mostrarRespuesta(id) {
+
+    const form = document.getElementById(`respuesta-form-${id}`);
+
+    if (form.style.display === "none") {
+        form.style.display = "block";
+    } else {
+        form.style.display = "none";
+    }
+}
+
+async function enviarRespuesta(parentId) {
+
+    const textarea = document.getElementById(`texto-${parentId}`);
+
+    const texto = textarea.value.trim();
+
+    if (!texto) return;
+
+    const res = await fetch("/comentario", {
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            parent: parentId,
+            contenido: texto,
+            contexto: "foro"
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        location.reload();
+    }
+}
+
+async function nuevoComentario() {
+
+    const textarea = document.getElementById("nuevo-texto");
+
+    const texto = textarea.value.trim();
+
+    if (!texto) return;
+
+    const res = await fetch("/comentario", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            parent: 0,
+            contenido: texto,
+            contexto: "foro"
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        location.reload();
+    }
+}
+
+</script>
+
 {% endblock %}

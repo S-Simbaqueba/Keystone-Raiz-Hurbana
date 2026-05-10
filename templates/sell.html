@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% set title = "Foro" %}
+{% block content %}
+
+<div class="comentarios">
+    
+    <div class="foro">
+        <div class="nuevo-comentario">
+
+        <textarea id="nuevo-texto"placeholder="Escribe un comentario, hazlo lo más claro posible, dejando información de contacto"></textarea>
+        <button
+        type="button"
+        onclick="nuevoComentario()">
+            Publicar
+        </button>
+
+    </div>
+        {% for c in comentarios.values() %}
+        <div class="comentario">
+            <p><strong>{{ c.Usuario }}</strong></p>
+            <p>{{ c.Contenido }}</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+
+<script>
+async function nuevoComentario() {
+
+    const textarea = document.getElementById("nuevo-texto");
+
+    const texto = textarea.value.trim();
+
+    if (!texto) return;
+
+    const res = await fetch("/comentario", {
+
+        method: "POST",
+
+        headers: {
+            "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify({
+            contenido: texto,
+            contexto: "sell"
+
+        })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        location.reload();
+    }
+}
+
+</script>
+
+{% endblock %}
