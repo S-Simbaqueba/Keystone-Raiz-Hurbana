@@ -319,6 +319,11 @@ def error_page():
 def blog_page():
     return render_template("blog.html")
 
+@app.route("/existir", methods=["GET", "POST"])
+def index_page():
+    return render_template("index.html")
+
+
 @app.route("/foro", methods=["GET", "POST"])
 def foro_page():
     comentarios = json.loads(FORO_PATH.read_text(encoding="utf-8"))
