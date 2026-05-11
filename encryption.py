@@ -1,17 +1,3 @@
-"""
-encryption.py
-
-Laboratorio de Cifrado y Manejo de Credenciales
-
-En este módulo deberás implementar:
-
-- Descifrado AES (MODE_EAX)
-- Hash de contraseña con salt usando PBKDF2-HMAC-SHA256
-- Verificación de contraseña usando el mismo salt
-
-NO modificar la función encrypt_aes().
-"""
-
 from Crypto.Cipher import AES
 from Crypto.Random import get_random_bytes
 import hashlib

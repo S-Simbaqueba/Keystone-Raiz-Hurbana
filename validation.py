@@ -1,19 +1,3 @@
-"""
-payment_validation.py
-
-Skeleton file for input validation exercise.
-You must implement each validation function according to the
-specification provided in the docstrings.
-
-All validation functions must return:
-
-    (clean_value, error_message)
-
-Where:
-    clean_value: normalized/validated value (or empty string if invalid)
-    error_message: empty string if valid, otherwise error description
-"""
-
 import re
 import unicodedata
 from datetime import datetime
