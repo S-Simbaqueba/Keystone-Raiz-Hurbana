@@ -563,3 +563,54 @@ img {
 
     cursor: pointer;
 }
+
+/* Blog */
+/* Contenedor de listas alineado a la izquierda */
+.ingredients, .steps {
+    text-align: left;      /* fuerza alineación a la izquierda */
+    max-width: 600px;      /* opcional: que no se extienda demasiado */
+    margin: 0 auto 20px;   /* centra el bloque pero el contenido queda a la izquierda */
+}
+
+/* Listas */
+.ingredients ul,
+.steps ol {
+    padding-left: 25px;    /* espacio para bullets/numeración */
+    margin: 0;
+    list-style: none;      /* quitamos bullets por defecto */
+}
+
+/* Ingredientes: emoji a la izquierda */
+.ingredients li {
+    margin-bottom: 8px;
+    font-size: 16px;
+    color: #333;
+    display: flex;         /* permite alinear emoji y texto en línea */
+    align-items: center;
+}
+
+/* Emoji al inicio */
+.ingredients li::before {
+    content: "🥗";
+    margin-right: 10px;    /* espacio entre emoji y texto */
+    flex-shrink: 0;        /* no se encoge */
+}
+
+/* Preparación: numeración personalizada */
+.steps li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    color: #333;
+    counter-increment: step-counter;
+    position: relative;
+    padding-left: 25px;    /* espacio para número */
+}
+
+/* Número antes del paso */
+.steps li::before {
+    content: counter(step-counter) ".";
+    position: absolute;
+    left: 0;
+    color: #4CAF50;
+    font-weight: bold;
+}

@@ -213,7 +213,7 @@ def validate_name_on_card(name_on_card: str) -> Tuple[str, str]:
     if len(name_on_card) < 2 or len(name_on_card) > 60:
         return "", "Invalid size"
     #Only characters
-    if all(x.isalpha() or x.isspace() or x =="-" or x == "'" for x in name_on_card):
+    if all(x.isnumeric() or x.isalpha() or x.isspace() or x =="-" or x == "'" for x in name_on_card):
         return name_on_card, ""
     return "", "Must contain only letters, spacem apostrophes, or hyphens"
 

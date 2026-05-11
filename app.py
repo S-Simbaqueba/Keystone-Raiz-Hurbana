@@ -32,10 +32,10 @@ def _user_with_defaults(u: dict) -> dict:
     return u
 
 def get_current_user() -> Optional[dict]:
-    email = session.get("user_email")
+    email = session.get("user")
     if not email:
         return None
-    return find_user_by_email(email)
+    return find_user_by_name(email)
 
 
 def _parse_date(date_str: str) -> Optional[datetime]:
@@ -75,6 +75,13 @@ def find_user_by_email(email: str) -> Optional[dict]:
             return u
     return None
 
+def find_user_by_name(name: str) -> Optional[dict]:
+    users = load_users()
+    email_norm = (name or "").strip().lower()
+    for u in users:
+        if (u.get("full_name", "") or "").strip().lower() == email_norm:
+            return u
+    return None
 
 def user_exists(email: str) -> bool:
     return find_user_by_email(email) is not None
@@ -123,39 +130,36 @@ def login():
         msg = "Account created successfully. Please sign in." if registered == "1" else None
         return render_template("login.html", info_message=msg)
     
-    
-    email = request.form.get("email", "")
+    usuario = request.form.get("usuario", "")
     password = request.form.get("password", "")
 
     field_errors = {}
-
-    if not email.strip():
-        field_errors["email"] = "Email is required."
+    if not usuario.strip():
+        field_errors["usuario"] = "Por favor poner usuario."
     else:
-        email, err = validation.validate_billing_email(email)
+        usuario, err = validation.validate_name_on_card(usuario)
         if err: 
-            field_errors["email"] = "Email format not valid"
+            field_errors["usuario"] = "Formato no valido"
     if not password.strip():
-        field_errors["password"] = "Password is required."
+        field_errors["password"] = "Por favor poner contraseña."
     
     if field_errors:
         return render_template(
             "login.html",
             error="Please fix the highlighted fields.",
             field_errors=field_errors,
-            form={"email": email},
+            form={"usuario": usuario},
         ), 400
 
-    user = find_user_by_email(email)
+    user = find_user_by_name(usuario)
     if not user or not encryption.verify_password(password, user.get("password")):
         return render_template(
             "login.html",
             error="Invalid credentials.",
-            field_errors={"email": " ", "password": " "},
-            form={"email": email},
+            field_errors={"usuario": " ", "password": " "},
+            form={"usuario": usuario},
         ), 401
-    session["user_email"] = (user.get("email") or "").strip().lower()
-    session['login_time'] = datetime.now(timezone.utc).timestamp()
+    session["user"] = (user.get("full_name") or "").strip()
 
     return redirect(url_for("dashboard"))
 
@@ -318,6 +322,10 @@ def error_page():
 @app.route("/blog", methods=["GET", "POST"])
 def blog_page():
     return render_template("blog.html")
+
+@app.route("/blog/1", methods=["GET", "POST"])
+def blog_page1():
+    return render_template("blog1.html")
 
 @app.route("/existir", methods=["GET", "POST"])
 def index_page():

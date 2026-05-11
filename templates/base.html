@@ -24,7 +24,7 @@
         <input name="q" value="{{ request.args.get('q','') }}" placeholder="Búscar..." />
       </form>
 
-      {% if session.get("user_email") %}
+      {% if session.get("user") %}
         <a class="btn btn-ghost" href="{{ url_for('profile') }}">Mi perfil</a>
         {% if current_user["role"] == "admin" %}
           <a class="btn btn-ghost" href="{{ url_for('admin_users') }}">Admin Panel</a>

@@ -7,14 +7,43 @@
       <h1>Bienvenido de vuelta, {{ user_name }}</h1>
     <p class="muted">Aquí puedes ver los datos de tus plantas</p>
 
-    <p class="muted">Planta 1</p>
+    <h2 class="muted">Planta 1</h2>
     <div class="containerDashboard">
       <div class="bloque izquierda">
-        <img src="{{ url_for('static', filename='images/GraficoDatos.png') }}" alt="Imagen">
+
+        <iframe width="1000" height="800"
+        src="https://app.powerbi.com/groups/me/reports/d918a7d4-c6e9-473d-9dee-72bb4b42804f/ae09af9703a3c72a81b0?experience=power-bi"
+        frameborder="0" allowFullScreen="true"></iframe>
+        <img src="{{ url_for('static', filename='images/GraficoDatos.png') }}" alt="Imagen" style="width: 100%; max-width: 1200px; height: auto;">
       </div>
       <div class="bloque derecha">
-          <h2>Planta de {{ user_name }}</h2>
-          <p>La planta esta bien en terminos generales, sin embargo, se evidencia que la cantidad de agua dada no es la correcta, se sugiere dar más agua. Adicionalmente, la calidad de tierra es de baja calidad, se recomineda cambios más constantes.</p>
+          <h2>Planta de tomate de {{ user_name }}</h2>
+          <p><b>Temperatura:</b> La temperatura ideal es de 22°C, mientras que la temperatura realista está en 25°C. Esto sugiere que el cultivo de tomates cherry está siendo cultivado en un ambiente más cálido de lo recomendado, lo cual puede afectar su crecimiento. 
+          <br><b>Recomendación:</b> Sería útil reducir la temperatura, tal vez usando ventilación o sombreado para mantenerla dentro del rango ideal de 22°C.
+          <br>
+          <br><b>Humedad:</b> El nivel ideal de humedad es del 60%, pero en el cultivo realista está al 45%. Esto es una diferencia notable. <b>Un nivel de humedad más bajo de lo ideal</b> puede estresar a las plantas y reducir la producción de frutos. 
+          <br><b>Recomendación:</b> Aumentar la humedad mediante sistemas de riego o aumentando la retención de humedad en el suelo, para evitar que las plantas sufran de deshidratación.
+          <br>
+          <br><b>Luz:</b> El nivel ideal de luz es de 8000 lux, mientras que el cultivo realista recibe solo 6000 lux. Esto indica que las plantas pueden no estar recibiendo suficiente luz para su desarrollo óptimo. 
+          <br><b>Recomendación:</b> Se recomienda aumentar la exposición a la luz, ya sea mediante luz artificial o asegurando que las plantas tengan más acceso a la luz natural.</p>
+      </div>
+    </div>  
+
+    <h2 class="muted">Planta 2</h2>
+    <div class="containerDashboard">
+      <div class="bloque izquierda">
+        <img src="{{ url_for('static', filename='images/GraficoDatos2.png') }}" alt="Imagen" style="width: 100%; max-width: 1200px; height: auto;">
+      </div>
+      <div class="bloque derecha">
+          <h2>Planta de fresa de {{ user_name }}</h2>
+          <p><b>Temperatura:</b> La temperatura ideal es de 18°C, mientras que el cultivo realista está en 20°C. Esta diferencia no es tan grande, pero un <b>exceso de calor</b> podría afectar negativamente la calidad del fruto. 
+          <br><b>Recomendación:</b> Mantener la temperatura cerca de los 18°C, asegurándose de que no suba más de lo necesario.
+          <br>
+          <br><b>Humedad:</b> La humedad ideal para las fresas es del 80%, pero el cultivo realista está al 70%. Aunque la diferencia no es tan grande, <b>una humedad más baja</b> puede llevar a una menor producción o afectar la salud de las plantas. 
+          <br><b>Recomendación:</b> Intentar aumentar la humedad, especialmente si se cultivan en invernaderos o en condiciones más secas.
+          <br>
+          <br><b>Luz:</b> Las fresas requieren un nivel de luz de 10000 lux, pero están recibiendo solo 7000 lux. Esto indica que las plantas pueden no estar recibiendo suficiente luz para crecer de manera óptima. 
+          <br><b>Recomendación:</b> Aumentar la cantidad de luz disponible para las fresas, ya sea de manera natural o artificial.
       </div>
     </div>
   </div>

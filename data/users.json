@@ -2,7 +2,6 @@
   {
     "id": 1,
     "full_name": "Usuario1",
-    "email": "test@tes.com",
     "phone": "3001111112",
     "password": {
       "algorithm": "pbkdf2_sha256",
@@ -16,7 +15,6 @@
   {
     "id": 2,
     "full_name": "Usuario2",
-    "email": "test3@tes.com",
     "phone": "3001111112",
     "password": {
       "algorithm": "pbkdf2_sha256",
@@ -30,7 +28,6 @@
   {
     "id": 3,
     "full_name": "Jonathan",
-    "email": "jojo@joestar.com",
     "phone": "12345678",
     "password": {
       "algorithm": "pbkdf2_sha256",
